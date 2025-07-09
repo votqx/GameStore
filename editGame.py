@@ -261,4 +261,4 @@ class editGame:
 
         self.Window.mainloop()
 
-editGame()
+#editGame()

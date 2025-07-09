@@ -209,4 +209,4 @@ class PurchaseList:
 
         self.Window.mainloop()
 
-PurchaseList()
+#PurchaseList()
