@@ -1,5 +1,7 @@
 from customtkinter import *
 from Main import GUI
+import sys
+import os
 from PIL import Image
 from tkinter import messagebox
 
@@ -7,6 +9,13 @@ app = CTk()
 app.geometry("600x480")
 app.resizable(0,0)
 app.title("Login")
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path,relative_path)
 
 def Login():
 
@@ -28,9 +37,9 @@ def Login():
         messagebox.showinfo("Error","Your username or password is not correct\nTry Again!!")
 
 
-side_img_data = Image.open("Image/side-img.png")
-email_icon_data = Image.open("Image/email-icon.png")
-password_icon_data = Image.open("Image/password-icon.png")
+side_img_data = Image.open(resource_path("Image/side-img.png"))
+email_icon_data = Image.open(resource_path("Image/email-icon.png"))
+password_icon_data = Image.open(resource_path("Image/password-icon.png"))
 
 side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(300, 480))
 email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20,20))
