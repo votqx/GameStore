@@ -4,10 +4,39 @@ from tkinter import messagebox
 from tkinter import ttk 
 from tkcalendar import DateEntry
 from datetime import datetime
+import csv
+import os
 
 class PurchaseList:
     def btnClose(self):
         self.Window.destroy()
+
+    def print_file(self):
+        desktop = os.path.join(os.path.expanduser("~"),"Desktop")
+        folder_name = "Records"
+        folder_path = os.path.join(desktop, folder_name)
+
+        #Cerate folder if it doesn't exist
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            messagebox.showinfo("Reminder",f"Record folder created at : {folder_path}")
+        else:
+            messagebox.showinfo("Reminder",f"Record already exists at : {folder_path}")
+
+        #Sale Record CSV file
+        file_path = os.path.join(folder_path,"Sale Records.csv")
+
+        Data = Select("SELECT SaleID, GName, SaleQty, TotalAmount, SaleDate, Payment FROM salerecord")
+
+        #Header
+        with open(file_path,"w") as file:
+            file.write("Sale ID, Game Name, Sale Quantity, Total Amount, Sale Date, Payment\n")
+        
+        #Append Data into file
+        with open(file_path,"a") as file:
+            for records in Data:
+                file.write(f"{records[0]},{records[1]},{records[2]},{records[3]},{records[4]},{records[5]}\n")
+
 
     def search(self):
         
@@ -170,11 +199,13 @@ class PurchaseList:
 
         bframe = CTkFrame(self.Window,height=50)
         bframe.grid(row=2,column=0,padx=5,pady=5,sticky='nswe')
-        bframe.grid_columnconfigure((0,1),weight=1)
+        bframe.grid_columnconfigure((0,1,2),weight=1)
 
         self.refresh_button = CTkButton(bframe,text="Refresh",command=self.Refresh).grid(row=0,column=0,padx=5,pady=5)
 
-        self.close_button = CTkButton(bframe,text="Exit",command=self.btnClose).grid(row=0,column=1,padx=5,pady=5)
+        self.file_button = CTkButton(bframe,text="File Output",command=self.print_file).grid(row=0,column=1,padx=5,pady=5)
+
+        self.close_button = CTkButton(bframe,text="Exit",command=self.btnClose).grid(row=0,column=2,padx=5,pady=5)
 
         self.Window.mainloop()
 

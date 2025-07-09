@@ -2,6 +2,8 @@ from SQL_Functions import *
 from customtkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+import os
+import csv
 
 class editGame:
     def selection(self,event):
@@ -26,6 +28,28 @@ class editGame:
             self.GPrice.insert(0,data[2])
             self.GQty.insert(0,data[3])
             self.select_data()
+
+    def print_file(self):
+        desktop = os.path.join(os.path.expanduser("~"),"Desktop")
+        folder_name = "Records"
+        folder_path = os.path.join(desktop,folder_name)
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            messagebox.showinfo("Reminder",f"Record folder created at : {folder_path}")
+        else:
+            messagebox.showinfo("Reminder",f"Record already exists at : {folder_path}")
+
+        file_path = os.path.join(folder_path,"Game Records.csv")
+
+        Data = Select("SELECT Name, gType, Price, Quantity from game")
+        #Header
+        with open(file_path,"w") as file:
+            file.write("Game Name, Platform Type, Price, Quantity\n")
+        #Append data
+        with open(file_path,"a") as file:
+            for records in Data:
+                file.write(f"{records[0]}, {records[1]}, {records[2]}, {records[3]}\n")
 
     def btnCloseClick(self):
         self.Window.destroy()
@@ -209,26 +233,32 @@ class editGame:
         #Bottom Left Frame
         bottomleftframe = CTkFrame(master=self.Window)
         bottomleftframe.grid(row=1,column=0,padx=5,pady=5,sticky="nsew",columnspan=2)
-        bottomleftframe.grid_columnconfigure((0,1,2,3,4),weight=1)
+        bottomleftframe.grid_columnconfigure((0,1,2,3,4,5),weight=1)
 
         # Configure column expansion
         #self.Window.grid_columnconfigure(0, weight=1)  # Left bottom frame expands
         #self.Window.grid_columnconfigure(1, weight=1)  # Right bottom frame expands
 
         #Buttons
-    
-        self.btnClear = CTkButton(bottomleftframe,text="Clear",width=90,command=self.clear_fun).grid(row=0,column=0,padx=15,pady=15)
 
+        #Clear
+        self.btnClear = CTkButton(bottomleftframe,text="Clear",width=90,command=self.clear_fun).grid(row=0,column=0,padx=15,pady=15)
+        
+        #Delete
         self.btnDelete = CTkButton(bottomleftframe,text="Delete",width=90,command=self.delete_Fun).grid(row=0,column=1,padx=15,pady=15)
 
+        #Update
         self.btnUpdate = CTkButton(bottomleftframe,text="Update",width=90,command=self.update).grid(row=0,column=2,padx=15,pady=15)
 
+        #File output
+        self.btnOutput = CTkButton(bottomleftframe,text="File Output",width=90,command=self.print_file).grid(row=0,column=3,padx=15,pady=15)
+
         #Refresh
-        self.rButton = CTkButton(bottomleftframe, text="Refresh",width=90, command=self.refresh_table).grid(row=0,column=3,padx=15,pady=15)     
+        self.rButton = CTkButton(bottomleftframe, text="Refresh",width=90, command=self.refresh_table).grid(row=0,column=4,padx=15,pady=15)     
     
         #Close
-        self.cButton = CTkButton(bottomleftframe, text="Exit",width=90,command=self.btnCloseClick).grid(row=0,column=4,padx=15,pady=15)
+        self.cButton = CTkButton(bottomleftframe, text="Exit",width=90,command=self.btnCloseClick).grid(row=0,column=5,padx=15,pady=15)
 
         self.Window.mainloop()
 
-#editGame()
+editGame()
