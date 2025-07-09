@@ -362,7 +362,7 @@ class Purchase:
             messagebox.showinfo("Notice",f"{item} have been deleted!!")
 
     def __init__(self):
-        self.root = CTkToplevel()
+        self.root = CTk()
         self.root.title("Purchase")
         self.root.resizable(0,0)
 
@@ -400,6 +400,7 @@ class Purchase:
         self.totalAmount = CTkEntry(bframe, width=200, validate="key",
                                     validatecommand=(self.root.register(self.validate_entry), '%P'))
         self.totalAmount.grid(row=1, column=1, padx=5, pady=5,sticky="w")
+
 
         # Sale Date
         CTkLabel(bframe, text="Sale Date:").grid(row=1, column=2, padx=5, pady=5, sticky="w")

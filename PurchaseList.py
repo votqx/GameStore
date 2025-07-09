@@ -3,7 +3,7 @@ from SQL_Functions import *
 from tkinter import messagebox
 from tkinter import ttk 
 from tkcalendar import DateEntry
-from  datetime import datetime
+from datetime import datetime
 
 class PurchaseList:
     def btnClose(self):
@@ -16,17 +16,38 @@ class PurchaseList:
         newdate = date.replace('0','')     
 
         selected_filter = self.Fliter.get()
+        order_filter = self.order.get()
 
-        SData = Select("Select SaleID, GName, SaleQty, TotalAmount, SaleDate, Payment From salerecord Where SaleDate='"+str(newdate)+"'")
-
-        if(selected_filter=="------Select------"):
+        if selected_filter == "------Select------":
             messagebox.showinfo("Error","Please Select One Option and Try Again.")
+
+        #Determine columnand Order
+        if selected_filter == "Sale Quantity":
+            order_column = "SaleQty"
+        elif selected_filter == "Amount":
+            order_column = "TotalAmount"
+        else:
+            order_column = None
+
+        if order_filter == "Accending":
+            order_direction = "ASC"
+        elif order_filter == "Decending":
+            order_direction = "DESC"
+        else:
+            order_direction = ""        
+
+        #Build SQL query with ORDER BY
+        query = f"SELECT SaleID, GName, SaleQty, TotalAmount, SaleDate, Payment FROM salerecord WHERE SaleDate='{str(newdate)}'"
+        if order_column and order_direction:
+            query += f"ORDER BY {order_column} {order_direction}"
+
+        SData = Select(query)
+
+        #Clear table
+        for data in self.table.get_children():
+            self.table.delete(data)
         
         if(selected_filter=="Sale Quantity"):
-            #Removing data in the table
-            for data in  self.table.get_children():
-                self.table.delete(data)
-
             #Reordering Titles
             self.table.heading("SaleID", text="Sale Quantities")
             self.table.heading("GName", text="GName")
@@ -35,22 +56,12 @@ class PurchaseList:
             self.table.heading("Sale Date", text="Sale Date")
             self.table.heading("Payment Method",text="Payment Method")
 
-            self.table.column("#1",width=150,anchor='center')
-            self.table.column("#2",width=150,anchor="center")
-            self.table.column("#3",width=150,anchor='center')
-            self.table.column("#4",width=150,anchor="center")
-            self.table.column("#5",width=150,anchor="center")
-            self.table.column("#6",width=150,anchor="center")
-
             for data1 in SData:
                 #Adding Data
                 self.table.insert(parent='',index='end',text='',values=[data1[2],data1[1],data1[0],data1[3],data1[4],data1[5]])
 
         elif(selected_filter=="Amount"):
-            #Removing data in Table
-            for data3 in self.table.get_children():
-                self.table.delete(data3)
-            
+                   
             #Reording titles
             self.table.heading("SaleID", text="Total Amount")
             self.table.heading("GName", text="GName")
@@ -58,13 +69,6 @@ class PurchaseList:
             self.table.heading("Amount", text="SaleID")
             self.table.heading("Sale Date", text="Sale Date")
             self.table.heading("Payment Method",text="Payment Method")
-
-            self.table.column("#1",width=150,anchor='center')
-            self.table.column("#2",width=150,anchor="center")
-            self.table.column("#3",width=150,anchor='center')
-            self.table.column("#4",width=150,anchor="center")
-            self.table.column("#5",width=150,anchor="center")
-            self.table.column("#6",width=150,anchor="center")
             
             for data4 in SData:
                 #Adding Data
@@ -141,30 +145,37 @@ class PurchaseList:
         sframe.grid(row=0,column=0,padx=5,pady=5,sticky="nswe")
 
         #Lables and Entries for Search
-
-        CTkLabel(sframe, text="Filter : ").grid(row=0,column=0,padx=10,pady=10)
+        #Filter
+        CTkLabel(sframe, text="Filter : ").grid(row=0,column=0,padx=5,pady=5)
         self.Fliter = CTkComboBox(sframe,values=["Sale Quantity","Amount"],width=200)
-        self.Fliter.grid(row=0,column=1,padx=10,pady=10)
+        self.Fliter.grid(row=0,column=1,padx=5,pady=5)
         self.Fliter.set("------Select------")
         
-
-        CTkLabel(sframe, text="Search By Sale Date : ").grid(row=0,column=2,padx=10,pady=10)
+        #Selection
+        CTkLabel(sframe, text="Search By Sale Date : ").grid(row=0,column=2,padx=5,pady=5)
         self.search_date = DateEntry(sframe, width=25,background='darkblue',foreground='white', borderwidth=2)
-        self.search_date.grid(row=0,column=3,padx=10,pady=10)
+        self.search_date.grid(row=0,column=3,padx=5,pady=5)
         self.search_date._set_text('----select date----') 
+
+        #Accending or Decending Order
+        CTkLabel(sframe, text="Order : ").grid(row=0,column=4,padx=5,pady=5)
+        self.order = CTkComboBox(sframe,values=["Accending","Decending"] ,width=200)
+        self.order.grid(row=0,column=5,padx=5,pady=5)
+        self.order.set("------Select------")
+
 
         #Button 
         self.search_button = CTkButton(sframe,text="Search",command=self.search)
-        self.search_button.grid(row=0,column=4,padx=10,pady=10)
+        self.search_button.grid(row=0,column=6,padx=5,pady=5)
 
         bframe = CTkFrame(self.Window,height=50)
         bframe.grid(row=2,column=0,padx=5,pady=5,sticky='nswe')
         bframe.grid_columnconfigure((0,1),weight=1)
 
-        self.refresh_button = CTkButton(bframe,text="Refresh",command=self.Refresh).grid(row=0,column=0,padx=10,pady=10)
+        self.refresh_button = CTkButton(bframe,text="Refresh",command=self.Refresh).grid(row=0,column=0,padx=5,pady=5)
 
-        self.close_button = CTkButton(bframe,text="Exit",command=self.btnClose).grid(row=0,column=1,padx=10,pady=10)
+        self.close_button = CTkButton(bframe,text="Exit",command=self.btnClose).grid(row=0,column=1,padx=5,pady=5)
 
         self.Window.mainloop()
 
-#PurchaseList()
+PurchaseList()
