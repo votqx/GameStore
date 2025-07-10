@@ -1,5 +1,5 @@
 from customtkinter import *
-from Main import GUI
+import Main
 import sys
 import os
 from PIL import Image
@@ -24,14 +24,12 @@ def Login():
 
     u_input = UEntry.get()
     p_input = PEntry.get()
-
-    gui = GUI()
    
     if(username==u_input and password==p_input):
         UEntry.delete(0, END)
         PEntry.delete(0, END)
         app.destroy()
-        gui.showForm()
+        Main.run_main_gui()
         
     else:
         messagebox.showinfo("Error","Your username or password is not correct\nTry Again!!")

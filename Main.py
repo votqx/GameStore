@@ -1,17 +1,28 @@
 from PIL import Image
 from tkinter import messagebox
 import Entry
+import os
+import sys
 from editGame import *
 from Purchase import *
 from PurchaseList import *
 import customtkinter
 
 class GUI:
+    def resource_path(relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path,relative_path)
+
     def showForm(self):
         self.root = customtkinter.CTk()
         self.root.title("Game Store Management System")
         self.root.geometry("850x450")
         self.root.resizable(0,0)
+        self.root.quit()
+
         #self.root.state("zoomed")
 
         # Widgets
@@ -96,6 +107,10 @@ class GUI:
     def Buy(self):
         Purchase()
 
+    
+def run_main_gui():
+    gui = GUI()
+    gui.showForm()
 
 # Running the GUI
 gui = GUI()
