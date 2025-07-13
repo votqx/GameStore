@@ -18,91 +18,6 @@ class Purchase:
         
         self.game_name.set(data[0])
     
-    def PayOption(self):
-
-        self.selected = str(self.Option.get())
-
-        if self.selected == "Kpay":
-            # Create a CTkToplevel window
-            win1 = CTkToplevel(self.root)
-            win1.resizable(0,0)
-            win1.grab_set()  # Make it modal
-            win1.title("QR Code")
-            
-            # Load and display the image
-            imgpath = r"Image/QRcodes/bing_generated_qrcode.png"
-            img = CTkImage(Image.open(imgpath), size=(500, 500))
-            imglabel = CTkLabel(win1, image=img, text="")
-            imglabel.grid(row=0, column=0, padx=20, pady=20)
-
-            # Add a close button
-            close_button = CTkButton(win1, text="Close", command=win1.destroy)
-            close_button.grid(row=1, column=0, padx=20, pady=20)
-
-        elif self.selected == "Wave pay":
-            # Create a CTkToplevel window
-            win1 = CTkToplevel(self.root)
-            win1.resizable(0,0)
-            win1.grab_set()  # Make it modal
-            win1.title("QR Code")
-         
-            # Load and display the image
-            imgpath = r"Image/QRcodes/wavepay.png"
-            img = CTkImage(Image.open(imgpath), size=(500, 500))
-            imglabel = CTkLabel(win1, image=img, text="")
-            imglabel.grid(row=0, column=0, padx=20, pady=20)
-
-            # Add a close button
-            close_button = CTkButton(win1, text="Close", command=win1.destroy)
-            close_button.grid(row=1, column=0, padx=20, pady=20)
-
-
-        elif self.selected == "Aya Pay":
-            # Create a CTkToplevel window
-            win1 = CTkToplevel(self.root)
-            win1.resizable(0,0)
-            win1.grab_set()  # Make it modal
-            win1.title("QR Code")
-         
-            # Load and display the image
-            imgpath = r"Image/QRcodes/ayapay.png"
-            img = CTkImage(Image.open(imgpath), size=(500, 500))
-            imglabel = CTkLabel(win1, image=img, text="")
-            imglabel.grid(row=0, column=0, padx=20, pady=20)
-
-            # Add a close button
-            close_button = CTkButton(win1, text="Close", command=win1.destroy)
-            close_button.grid(row=1, column=0, padx=20, pady=20)
-
-        elif self.selected == "Cash":
-         
-            messagebox.showinfo("Gamestore","Cash Payment Selected.")
-
-        elif self.selected == "Credit Card":
-         
-            messagebox.showinfo("Gamestore","Credit Card Payment Selected.")
-
-
-        elif self.selected == "Visa":
-            # Create a CTkToplevel window
-            win1 = CTkToplevel(self.root)
-            win1.resizable(0,0)
-            win1.grab_set()  # Make it modal
-            win1.title("QR Code")
-         
-            # Load and display the image
-            imgpath = r"Image/QRcodes/visa.png"
-            img = CTkImage(Image.open(imgpath), size=(500, 500))
-            imglabel = CTkLabel(win1, image=img, text="")
-            imglabel.grid(row=0, column=0, padx=20, pady=20)
-
-            # Add a close button
-            close_button = CTkButton(win1, text="Close", command=win1.destroy)
-            close_button.grid(row=1, column=0, padx=20, pady=20)
-
-            self.Option.set("------Select------")
-
-
     def validate_entry(self, new_value):
         if new_value == "":
             return True
@@ -153,7 +68,6 @@ class Purchase:
         elif(payment=="------Select------"):
             messagebox.showinfo("Error","Invalid Payment Option!!\nPlease Try again")
         else:
-            self.PayOption()
             '''RD = Select("Select GameID from game Where Name='"+str(game_name)+"'")
             BR=RD[0]'''
 
@@ -187,12 +101,10 @@ class Purchase:
             if(selected!=payment):
                 messagebox.showinfo("Error","Recommened for using the same payment for the items in the cart.")
            
-            self.PayOption()
             name = self.game_name.get()
             price = self.totalAmount.get()
             qty = self.quantity.get()
-            payment = str(self.Option.get())
-                
+            
             #Insert to cart table
             self.ctable.insert(parent='',index="end",text='',values=[name,price,qty,payment])
 
@@ -427,6 +339,5 @@ class Purchase:
         self.Option.configure(values=self.opt)
 
         self.root.mainloop()
-
 
 #Purchase()

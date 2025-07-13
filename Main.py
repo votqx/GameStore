@@ -9,19 +9,12 @@ from PurchaseList import *
 import customtkinter
 
 class GUI:
-    def resource_path(relative_path):
-        try:
-            base_path = sys._MEIPASS
-        except Exception:
-            base_path = os.path.abspath(".")
-        return os.path.join(base_path,relative_path)
-
     def showForm(self):
         self.root = customtkinter.CTk()
         self.root.title("Game Store Management System")
         self.root.geometry("850x450")
         self.root.resizable(0,0)
-        self.root.quit()
+        #self.root.quit()
 
         #self.root.state("zoomed")
 
@@ -35,6 +28,15 @@ class GUI:
 
     def btnClose(self):
         self.root.destroy()
+
+    def resource_path(self,relative_path):
+        print(f"Base path: {type(self)}, {self}")  # Debug
+        print(f"Relative path: {type(relative_path)}, {relative_path}")  # Debug
+        try:
+            self.base_path = sys._MEIPASS
+        except Exception:
+            self.base_path = os.path.abspath(".")
+        return os.path.join(self.base_path,relative_path)
 
     # Option Menu    
     def create_menu(self):
@@ -61,13 +63,7 @@ class GUI:
         self.label = customtkinter.CTkLabel(self.root, text="EDGE", font=("League Spartan", 98, "bold"), text_color="#FFFFFF")
         self.label.place(x=40, y=175)
 
-    # Images (Side, etc.)
-    def create_image(self):
-        imgpath = r"Image/wawa.png"
-        self.myImage = customtkinter.CTkImage(Image.open(imgpath), size=(413, 604))
-        imageLabel = customtkinter.CTkLabel(self.root, image=self.myImage, text="")
-        imageLabel.place(x=513, y=0)
-
+    
     # Switch
     def create_switch(self):
         self.switch_var = customtkinter.StringVar(value="off")
@@ -106,12 +102,28 @@ class GUI:
 
     def Buy(self):
         Purchase()
+    
+    # Images (Side, etc.)
+    def create_image(self):
+        try:
+            imgpath = os.path.join("Image", "wawa.png")
+            if not os.path.exists(imgpath):
+                raise FileNotFoundError(f"Image not found at {imgpath}")
+                
+            self.myImage = customtkinter.CTkImage(Image.open(imgpath), size=(413, 604))
+            imageLabel = customtkinter.CTkLabel(self.root, image=self.myImage, text="")
+            imageLabel.place(x=513, y=0)
+        except Exception as e:
+            print(f"Error loading image: {e}")
+            # Create a blank label as fallback
+            imageLabel = customtkinter.CTkLabel(self.root, text="Image Missing", width=413, height=604)
+            imageLabel.place(x=513, y=0)
 
     
 def run_main_gui():
     gui = GUI()
     gui.showForm()
 
-# Running the GUI
-gui = GUI()
-#gui.showForm()
+if __name__ == "__main__":
+    gui = GUI()
+    gui.showForm()
